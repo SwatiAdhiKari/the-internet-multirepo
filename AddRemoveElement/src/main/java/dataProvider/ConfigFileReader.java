@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 public class ConfigFileReader {
@@ -11,12 +12,21 @@ public class ConfigFileReader {
 	private Properties properties;
 	private final String propertyFilePath= "configuration//config.properties";
 
+	public Properties loadProperties() {
+        properties = new Properties();
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("commonConfig.properties")) {
+            properties.load(inputStream);
+        } catch (IOException e) {
+            // Handle the exception appropriately
+        }
+        return properties;
+    }
 	
 	public ConfigFileReader(){
 		BufferedReader reader;
 		try {
 			reader = new BufferedReader(new FileReader(propertyFilePath));
-			properties = new Properties();
+			properties = loadProperties();
 			try {
 				properties.load(reader);
 				reader.close();
